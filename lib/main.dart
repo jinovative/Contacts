@@ -1,77 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'Contact.dart';
+import 'screens/dialer_screen.dart';
+import 'screens/contacts_screen.dart';
+import 'screens/call_log_screen.dart';
+import 'screens/favorites_screen.dart';
+import 'screens/voicemail_screen.dart';
 
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => ContactsProvider(),
-      child: ContactsApp(),
-    ),
-  );
-}
+void main() => runApp(MyApp());
 
-class ContactsApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ContactsPage(),
+      home: HomeScreen(),
     );
   }
 }
 
-class ContactsPage extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 3;
+  final List<Widget> _screens = [
+    FavoritesScreen(),
+    CallLogScreen(),
+    ContactsScreen(),
+    DialerScreen(),
+    VoicemailScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Contacts'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: phoneController,
-              decoration: InputDecoration(labelText: 'Contacts'),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Provider.of<ContactsProvider>(context, listen: false)
-                  .addContact(nameController.text, phoneController.text);
-              nameController.clear();
-              phoneController.clear();
-            },
-            child: Text('Add'),
-          ),
-          Expanded(
-            child: Consumer<ContactsProvider>(
-              builder: (context, contactsProvider, child) {
-                return ListView.builder(
-                  itemCount: contactsProvider.contacts.length,
-                  itemBuilder: (context, index) {
-                    final contact = contactsProvider.contacts[index];
-                    return ListTile(
-                      title: Text(contact.name),
-                      subtitle: Text(contact.phone),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.star), label: '즐겨찾기'),
+          BottomNavigationBarItem(icon: Icon(Icons.call), label: '통화 기록'),
+          BottomNavigationBarItem(icon: Icon(Icons.contacts), label: '연락처'),
+          BottomNavigationBarItem(icon: Icon(Icons.dialpad), label: '다이얼'),
+          BottomNavigationBarItem(icon: Icon(Icons.voicemail), label : '보이스메일')
         ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.lightBlue[700], // 선택된 아이템의 색상
+        unselectedItemColor: Colors.grey, // 선택되지 않은 아이템의 색상
+        onTap: _onItemTapped,
       ),
     );
   }
