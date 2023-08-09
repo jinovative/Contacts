@@ -1,11 +1,18 @@
+import 'package:contact/providers/contacts_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'screens/dialer_screen.dart';
 import 'screens/contacts_screen.dart';
 import 'screens/call_log_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/voicemail_screen.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+  ChangeNotifierProvider(
+    create: (context) => ContactsProvider(),
+    child: MyApp(),
+  ),
+);
 
 class MyApp extends StatelessWidget {
   @override

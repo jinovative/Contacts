@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:contact/providers/contacts_provider.dart';
 
+import 'contact_detail_screen.dart';
+
 class DialerScreen extends StatefulWidget {
   @override
   _DialerScreenState createState() => _DialerScreenState();
@@ -28,7 +30,7 @@ class _DialerScreenState extends State<DialerScreen> {
         title: Text('Contact'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
             height: 80,
@@ -44,17 +46,25 @@ class _DialerScreenState extends State<DialerScreen> {
             ),
           ),
           // 연락처 저장 버튼
-          if (phoneController.text.isNotEmpty) // 조건을 추가하여 입력값이 있을 때만 버튼을 표시합니다.
-            ElevatedButton(
+          Container(
+            height: 50, // 고정된 높이 설정
+            child: phoneController.text.isNotEmpty
+                ? ElevatedButton(
               onPressed: () {
-                // ContactsProvider 인스턴스를 가져옴
-                final contactsProvider = Provider.of<ContactsProvider>(context, listen: false);
-
-                // 연락처 저장 함수 호출
-                contactsProvider.addContact("이름", phoneController.text);
+                // 새로운 화면으로 이동하고 전화번호를 전달합니다.
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactDetailScreen(phoneNumber: phoneController.text),
+                  ),
+                );
               },
               child: Text('저장'),
-            ),
+            )
+                : SizedBox.shrink(), // 입력값이 없을 때는 높이가 0인 SizedBox를 반환하여 컨테이너가 빈 공간을 차지하게 함
+          )
+          ,
+
           Expanded(
             child: GridView.count(
               crossAxisCount: 3,
@@ -86,7 +96,7 @@ class _DialerScreenState extends State<DialerScreen> {
                 ),
                 child: Icon(Icons.call, size: 40, color: Colors.white),
               ),
-              SizedBox(width: 80), // 지우기 버튼과 통화 버튼 사이의 간격 조절
+              SizedBox(width: 50), // 지우기 버튼과 통화 버튼 사이의 간격 조절
               IconButton(
                 icon: Icon(Icons.backspace_outlined, size: 30, color: Colors.grey),
                 onPressed: () {

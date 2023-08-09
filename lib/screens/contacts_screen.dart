@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:contact/providers/contacts_provider.dart';
+
+import '../models/contact.dart';
+import 'contact_detail_screen.dart'; // 연락처 프로바이더 가져오기
 
 class ContactsScreen extends StatelessWidget {
   final List<Contact> contacts = [
@@ -9,6 +14,10 @@ class ContactsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 연락처 프로바이더를 가져옴
+    final contactsProvider = Provider.of<ContactsProvider>(context);
+    final contacts = contactsProvider.contacts; // 연락처 목록을 가져옴
+
     return Scaffold(
       appBar: AppBar(
         title: Text('연락처'),
@@ -22,7 +31,12 @@ class ContactsScreen extends StatelessWidget {
             title: Text(contact.name),
             subtitle: Text(contact.phone),
             onTap: () {
-              // 연락처 상세 화면으로 이동하거나 다른 동작 수행
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ContactDetailScreen(phoneNumber: contact.phone), // phoneNumber를 전달
+                ),
+              );
             },
           );
         },
@@ -35,11 +49,4 @@ class ContactsScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class Contact {
-  final String name;
-  final String phone;
-
-  Contact({required this.name, required this.phone});
 }
