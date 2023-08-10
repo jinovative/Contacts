@@ -34,7 +34,8 @@ class ContactsScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ContactDetailScreen(phoneNumber: contact.phone), // phoneNumber를 전달
+                  builder: (context) => ContactDetailScreen(
+                      index: index, phoneNumber: contacts[index].phone),
                 ),
               );
             },
@@ -44,9 +45,16 @@ class ContactsScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // 새 연락처 추가 화면으로 이동
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ContactDetailScreen(phoneNumber: ''), // phoneNumber를 빈 문자열로 전달
+            ),
+          );
         },
         child: Icon(Icons.add),
       ),
+
     );
   }
 }

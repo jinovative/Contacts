@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:contact/providers/contacts_provider.dart';
 
 class ContactDetailScreen extends StatefulWidget {
+  final int? index;
   final String phoneNumber;
 
-  ContactDetailScreen({required this.phoneNumber});
+  ContactDetailScreen({this.index, required this.phoneNumber});
 
   @override
   _ContactDetailScreenState createState() => _ContactDetailScreenState();
@@ -13,6 +14,17 @@ class ContactDetailScreen extends StatefulWidget {
 
 class _ContactDetailScreenState extends State<ContactDetailScreen> {
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController(); // 전화번호 컨트롤러 추가
+
+  @override
+  void initState() {
+    super.initState();
+    phoneController.text = widget.phoneNumber;
+    if (widget.index != null) {
+      final contactsProvider = Provider.of<ContactsProvider>(context, listen: false);
+      nameController.text = contactsProvider.contacts[widget.index!].name;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +39,17 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
               decoration: InputDecoration(labelText: '이름'),
             ),
             TextField(
-              controller: TextEditingController(text: widget.phoneNumber),
+              controller: phoneController, // 전화번호 입력 필드
               decoration: InputDecoration(labelText: '전화번호'),
-              readOnly: true,
             ),
             ElevatedButton(
               onPressed: () {
                 final contactsProvider = Provider.of<ContactsProvider>(context, listen: false);
-                contactsProvider.addContact(nameController.text, widget.phoneNumber);
-
-                // 연락처 저장 후 이전 화면으로 돌아갑니다.
+                if (widget.index != null) {
+                  contactsProvider.updateContact(widget.index!, nameController.text, phoneController.text);
+                } else {
+                  contactsProvider.addContact(nameController.text, phoneController.text);
+                }
                 Navigator.pop(context);
               },
               child: Text('저장'),
@@ -47,3 +60,4 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
     );
   }
 }
+

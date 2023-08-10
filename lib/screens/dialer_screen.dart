@@ -51,7 +51,6 @@ class _DialerScreenState extends State<DialerScreen> {
             child: phoneController.text.isNotEmpty
                 ? ElevatedButton(
               onPressed: () {
-                // 새로운 화면으로 이동하고 전화번호를 전달합니다.
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -61,6 +60,7 @@ class _DialerScreenState extends State<DialerScreen> {
               },
               child: Text('저장'),
             )
+
                 : SizedBox.shrink(), // 입력값이 없을 때는 높이가 0인 SizedBox를 반환하여 컨테이너가 빈 공간을 차지하게 함
           )
           ,
