@@ -1,14 +1,20 @@
+import 'package:contact/models/call_log.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/call_log_provider.dart';
 
 class CallLogScreen extends StatelessWidget {
   final List<CallLog> callLogs = [
-    CallLog(contactName: 'Alice', time: '오전 10:30', callType: CallType.incoming),
-    CallLog(contactName: 'Bob', time: '오후 3:15', callType: CallType.missed),
-    // 여기에 더 많은 통화 기록 추가
   ];
 
   @override
   Widget build(BuildContext context) {
+    // CallLogProvider의 인스턴스에 액세스
+    final callLogProvider = Provider.of<CallLogProvider>(context);
+    // CallLogProvider에서 통화 기록 가져오기
+    final callLogs = callLogProvider.callLogs;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('통화 기록'),

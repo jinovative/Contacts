@@ -6,10 +6,9 @@ class CallLogProvider with ChangeNotifier {
 
   List<CallLog> get callLogs => _callLogs;
 
-  void addCallLog(String contactName, String time, CallType callType) {
+  void addCallLog({required String contactName, required String time, required CallType callType}) {
     _callLogs.add(CallLog(contactName: contactName, time: time, callType: callType));
     notifyListeners();
   }
-
 
 }

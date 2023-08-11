@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:contact/providers/contacts_provider.dart';
-
+import '../models/call_log.dart';
+import '../models/contact.dart';
+import '../providers/call_log_provider.dart';
 import 'contact_detail_screen.dart';
 
 class DialerScreen extends StatefulWidget {
@@ -12,16 +15,23 @@ class DialerScreen extends StatefulWidget {
 class _DialerScreenState extends State<DialerScreen> {
   final TextEditingController phoneController = TextEditingController();
 
+  String findContactName(String phoneNumber, List<Contact> contacts) {
+    final contact = contacts.firstWhere(
+          (contact) => contact.phone == phoneNumber,
+      orElse: () => Contact(name: '', phone: ''), // 빈 연락처 반환
+    );
+
+    return contact.name.isNotEmpty ? contact.name : phoneNumber;
+  }
+
+
   @override
   void initState() {
     super.initState();
-
-    // 전화번호 입력값이 변경될 때마다 상태를 다시 빌드합니다.
     phoneController.addListener(() {
       setState(() {});
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +95,23 @@ class _DialerScreenState extends State<DialerScreen> {
             children: [
               ElevatedButton(
                 onPressed: () {
+                  final phoneNumber = phoneController.text;
+                  final contactsProvider = Provider.of<ContactsProvider>(context, listen: false);
+                  final contactName = findContactName(phoneNumber, contactsProvider.contacts);
+
+                  // 현재 시간을 가져와 원하는 형식으로 변환합니다.
+                  final currentTime = DateFormat('오전 hh:mm').format(DateTime.now());
+
                   // 전화 걸기 로직
-                  print('전화 걸기: ${phoneController.text}');
+                  print('전화 걸기: $phoneNumber');
+
+                  // 통화 기록에 추가
+                  final callLogProvider = Provider.of<CallLogProvider>(context, listen: false);
+                  callLogProvider.addCallLog(
+                    contactName: contactName,
+                    time: currentTime, // 현재 시간을 사용
+                    callType: CallType.outgoing,
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   shape: CircleBorder(),
@@ -142,5 +167,3 @@ class DialerButton extends StatelessWidget {
     );
   }
 }
-
-

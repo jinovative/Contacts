@@ -1,3 +1,4 @@
+import 'package:contact/providers/call_log_provider.dart';
 import 'package:contact/providers/contacts_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +9,15 @@ import 'screens/favorites_screen.dart';
 import 'screens/voicemail_screen.dart';
 
 void main() => runApp(
-  ChangeNotifierProvider(
-    create: (context) => ContactsProvider(),
+  MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => ContactsProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => CallLogProvider(),
+      ),
+    ],
     child: MyApp(),
   ),
 );
