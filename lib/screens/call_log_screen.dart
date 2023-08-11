@@ -4,15 +4,17 @@ import 'package:provider/provider.dart';
 
 import '../providers/call_log_provider.dart';
 
-class CallLogScreen extends StatelessWidget {
-  final List<CallLog> callLogs = [
-  ];
+class CallLogScreen extends StatefulWidget {
+  @override
+  _CallLogScreenState createState() => _CallLogScreenState();
+}
+
+class _CallLogScreenState extends State<CallLogScreen> {
+  int? selectedCallLogIndex; // 선택한 통화 기록의 인덱스
 
   @override
   Widget build(BuildContext context) {
-    // CallLogProvider의 인스턴스에 액세스
     final callLogProvider = Provider.of<CallLogProvider>(context);
-    // CallLogProvider에서 통화 기록 가져오기
     final callLogs = callLogProvider.callLogs;
 
     return Scaffold(
@@ -23,45 +25,48 @@ class CallLogScreen extends StatelessWidget {
         itemCount: callLogs.length,
         itemBuilder: (context, index) {
           final callLog = callLogs[index];
-          return ListTile(
-            leading: Icon(callLog.callType.icon),
-            title: Text(callLog.contactName),
-            subtitle: Text(callLog.time),
-            onTap: () {
-              // 통화 기록 상세 화면으로 이동하거나 다른 동작 수행
-            },
+
+          return Column(
+            children: [
+              ListTile(
+                leading: Icon(callLog.callType.icon),
+                title: Text(callLog.contactName),
+                subtitle: Text(callLog.time),
+                onTap: () {
+                  setState(() {
+                    selectedCallLogIndex = selectedCallLogIndex == index ? null : index; // 탭 선택/해제
+                  });
+                },
+              ),
+              // 선택한 통화 기록에 대한 카테고리 탭 표시
+              if (selectedCallLogIndex == index)
+                Row(
+                  children: [
+                    TextButton(
+                      child: Text('통화'),
+                      onPressed: () {
+                        // 통화 로직 실행
+                      },
+                    ),
+                    TextButton(
+                      child: Text('메시지'),
+                      onPressed: () {
+                        // 메시지 로직 실행
+                      },
+                    ),
+                    TextButton(
+                      child: Text('저장'),
+                      onPressed: () {
+                        // 메시지 로직 실행
+                      },
+                    ),
+                    // 여기에 더 많은 카테고리를 추가할 수 있습니다.
+                  ],
+                ),
+            ],
           );
         },
       ),
     );
-  }
-}
-
-class CallLog {
-  final String contactName;
-  final String time;
-  final CallType callType;
-
-  CallLog({required this.contactName, required this.time, required this.callType});
-}
-
-enum CallType {
-  incoming,
-  outgoing,
-  missed,
-}
-
-extension CallTypeExtension on CallType {
-  IconData get icon {
-    switch (this) {
-      case CallType.incoming:
-        return Icons.call_received;
-      case CallType.outgoing:
-        return Icons.call_made;
-      case CallType.missed:
-        return Icons.call_missed;
-      default:
-        return Icons.call;
-    }
   }
 }
