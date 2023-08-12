@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,6 @@ class _DialerScreenState extends State<DialerScreen> {
     return contact.name.isNotEmpty ? contact.name : phoneNumber;
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -35,45 +35,50 @@ class _DialerScreenState extends State<DialerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Contact'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            height: 80,
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: TextField(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              textAlign: TextAlign.center,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
-              style: TextStyle(fontSize: 30),
-            ),
-          ),
-          // 연락처 저장 버튼
-          Container(
-            height: 50, // 고정된 높이 설정
-            child: phoneController.text.isNotEmpty
-                ? ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ContactDetailScreen(phoneNumber: phoneController.text),
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text('Contact'),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              height: 200, // 고정된 높이 설정
+              padding: EdgeInsets.symmetric(horizontal: 20), // 수평 패딩 추가
+              child: Center(
+                child: CupertinoTextField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.phone,
+                  textAlign: TextAlign.center, // 텍스트 중앙 정렬
+                  style: TextStyle(fontSize: 30), // 텍스트 크기 설정
+                  placeholder: "번호 입력", // 플레이스홀더 텍스트 추가
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.transparent), // 테두리 제거
                   ),
-                );
-              },
-              child: Text('저장'),
-            )
+                ),
+              ),
+            ),
 
-                : SizedBox.shrink(), // 입력값이 없을 때는 높이가 0인 SizedBox를 반환하여 컨테이너가 빈 공간을 차지하게 함
+
+            // 연락처 저장 버튼
+        Container(
+          height: 80, // 고정된 높이 설정
+          child: phoneController.text.isNotEmpty
+              ? CupertinoButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => ContactDetailScreen(phoneNumber: phoneController.text),
+                ),
+              );
+            },
+            child: Text('저장'),
           )
-          ,
+
+              : SizedBox.shrink(),
+        ),
+
 
           Expanded(
             child: GridView.count(
@@ -100,7 +105,7 @@ class _DialerScreenState extends State<DialerScreen> {
                   final contactName = findContactName(phoneNumber, contactsProvider.contacts);
 
                   // 현재 시간을 가져와 원하는 형식으로 변환합니다.
-                  final currentTime = DateFormat('오전 hh:mm').format(DateTime.now());
+                  final currentTime = DateFormat('hh:mm').format(DateTime.now());
 
                   // 전화 걸기 로직
                   print('전화 걸기: $phoneNumber');
@@ -114,8 +119,7 @@ class _DialerScreenState extends State<DialerScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  shape: CircleBorder(),
-                  primary: Colors.green,
+                  shape: CircleBorder(), backgroundColor: Colors.green,
                   padding: EdgeInsets.all(30),
                   fixedSize: Size.fromHeight(180),
                 ),
@@ -149,18 +153,18 @@ class DialerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      customBorder: CircleBorder(), // 터치 효과의 테두리를 원형으로 만듦
+      customBorder: CircleBorder(),
       child: Container(
-        width: 10, // 버튼의 너비 설정
-        height: 10, // 버튼의 높이 설정
+        width: 80, // 버튼의 너비 설정
+        height: 80, // 버튼의 높이 설정
         decoration: BoxDecoration(
-          color: Colors.grey[200], // 버튼의 배경색을 연한 회색으로 설정
-          shape: BoxShape.circle, // 버튼의 모양을 원형으로 만듦
+          color: Colors.grey[200],
+          shape: BoxShape.circle,
         ),
         child: Center(
           child: Text(
             text,
-            style: TextStyle(fontSize: 30, color: Colors.black), // 텍스트 크기 조정
+            style: TextStyle(fontSize: 30, color: Colors.black),
           ),
         ),
       ),

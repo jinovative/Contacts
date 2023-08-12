@@ -60,6 +60,13 @@ class _CallLogScreenState extends State<CallLogScreen> {
                         // 메시지 로직 실행
                       },
                     ),
+                    TextButton(
+                      child: Text('상세보기'),
+                      onPressed: () {
+                        // 메시지 로직 실행
+                      },
+                    ),
+
                     // 여기에 더 많은 카테고리를 추가할 수 있습니다.
                   ],
                 ),
