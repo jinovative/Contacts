@@ -83,7 +83,7 @@ class _DialerScreenState extends State<DialerScreen> {
           Expanded(
             child: GridView.count(
               crossAxisCount: 3,
-              childAspectRatio: 1.5,
+              childAspectRatio: 2,
               children: List.generate(12, (index) {
                 return DialerButton(
                   text: index < 9 ? '${index + 1}' : index == 9 ? '*' : index == 10 ? '0' : '#',
@@ -155,8 +155,8 @@ class DialerButton extends StatelessWidget {
       onTap: onTap,
       customBorder: CircleBorder(),
       child: Container(
-        width: 80, // 버튼의 너비 설정
-        height: 80, // 버튼의 높이 설정
+        width: 50, // 버튼의 너비 설정
+        height: 50, // 버튼의 높이 설정
         decoration: BoxDecoration(
           color: Colors.grey[200],
           shape: BoxShape.circle,
