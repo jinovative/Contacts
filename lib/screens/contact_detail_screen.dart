@@ -105,27 +105,22 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
               controller: phoneController,
               decoration: InputDecoration(labelText: 'add Phone'),
             ),
-            TextField(
-              decoration: InputDecoration(labelText: 'add email'),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Ringtone'),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Vibration'),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Text Tone'),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'add URL'),
-            ),
-            Column(
-              children: [
-                ListTile(
-                  leading: GestureDetector(
-                    onTap: _toggleAddressField,
-                    child: Container(
+            GestureDetector(
+              onTap: _toggleAddressField,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
+                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'add email'),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Container(
                       width: 30,
                       height: 30,
                       decoration: BoxDecoration(
@@ -137,38 +132,243 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                         color: Colors.white,
                       ),
                     ),
+                    title: Text('add email'),
                   ),
-                  title: Text('add address'),
-                ),
-                AnimatedContainer(
-                  height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
-                  duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: TextField(
-                      decoration: InputDecoration(labelText: 'add address'),
+                ],
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(labelText: 'Ringtone'),
+            ),
+            TextField(
+              decoration: InputDecoration(labelText: 'Vibration'),
+            ),
+            TextField(
+              decoration: InputDecoration(labelText: 'Text Tone'),
+            ),
+            GestureDetector(
+              onTap: _toggleAddressField,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
+                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'add url'),
+                      ),
                     ),
                   ),
-                ),
-                // 여기에 다른 카테고리를 계속해서 추가
-              ],
+                  ListTile(
+                    leading: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text('add url'),
+                  ),
+                ],
+              ),
             ),
-
-
-            TextField(
-              decoration: InputDecoration(labelText: 'add birthday'),
+            GestureDetector(
+              onTap: _toggleAddressField,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
+                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'add address'),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text('add address'),
+                  ),
+                ],
+              ),
             ),
-            TextField(
-              decoration: InputDecoration(labelText: 'add date'),
+            GestureDetector(
+              onTap: _toggleAddressField,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
+                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'add birthday'),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text('add birthday'),
+                  ),
+                ],
+              ),
             ),
-            TextField(
-              decoration: InputDecoration(labelText: 'add related name'),
+            GestureDetector(
+              onTap: _toggleAddressField,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
+                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'add date'),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text('add date'),
+                  ),
+                ],
+              ),
             ),
-            TextField(
-              decoration: InputDecoration(labelText: 'add social profile'),
+            GestureDetector(
+              onTap: _toggleAddressField,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
+                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'add related name'),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text('add related name'),
+                  ),
+                ],
+              ),
             ),
-            TextField(
-              decoration: InputDecoration(labelText: 'add instant message'),
+            GestureDetector(
+              onTap: _toggleAddressField,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
+                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'add social profile'),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text('add social profile'),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: _toggleAddressField,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    height: showAddressField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
+                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'add Instant message'),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text('add Instant message'),
+                  ),
+                ],
+              ),
             ),
             TextField(
               decoration: InputDecoration(labelText: 'Notes'),
