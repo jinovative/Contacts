@@ -19,11 +19,30 @@ class _DialerScreenState extends State<DialerScreen> {
   String findContactName(String phoneNumber, List<Contact> contacts) {
     final contact = contacts.firstWhere(
           (contact) => contact.phone == phoneNumber,
-      orElse: () => Contact(name: '', phone: ''), // 빈 연락처 반환
+      orElse: () => Contact(
+        firstName: '',
+        lastName: '',
+        company: '',
+        phone: '',
+        email: '',
+        ringtone: '',
+        textTone: '',
+        url: '',
+        address: '',
+        birthday: null,
+        addDate: null,
+        relatedName: '',
+        socialProfile: '',
+        instantMessage: '',
+        note: '',
+      ), // 빈 연락처 반환
     );
 
-    return contact.name.isNotEmpty ? contact.name : phoneNumber;
+    String contactName = "${contact.firstName} ${contact.lastName}".trim();
+    return contactName.isNotEmpty ? contactName : phoneNumber;
   }
+
+
 
   @override
   void initState() {

@@ -8,11 +8,14 @@ class ContactListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // firstName과 lastName을 합쳐 이름을 표시
+    final contactName = "${contact.firstName} ${contact.lastName}".trim();
+
     return ListTile(
       leading: Icon(Icons.person),
-      title: Text(contact.name),
+      title: Text(contactName),
       subtitle: Text(contact.phone),
-      onTap: () {
+      onTap: (){
         // 연락처 상세 화면으로 이동하거나 다른 동작 수행
       },
     );

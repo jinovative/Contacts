@@ -32,9 +32,10 @@ class ContactsScreen extends StatelessWidget {
         itemCount: contacts.length,
         itemBuilder: (context, index) {
           final contact = contacts[index];
+          final contactName = "${contact.firstName} ${contact.lastName}".trim(); // firstName과 lastName을 합쳐 이름을 표시
           return ListTile(
             leading: Icon(CupertinoIcons.person),
-            title: Text(contact.name),
+            title: Text(contactName),
             subtitle: Text(contact.phone),
             onTap: () {
               Navigator.push(
