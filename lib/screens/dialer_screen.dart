@@ -42,8 +42,6 @@ class _DialerScreenState extends State<DialerScreen> {
     return contactName.isNotEmpty ? contactName : phoneNumber;
   }
 
-
-
   @override
   void initState() {
     super.initState();
@@ -80,20 +78,20 @@ class _DialerScreenState extends State<DialerScreen> {
 
 
             // 연락처 저장 버튼
-        Container(
-          height: 80, // 고정된 높이 설정
-          child: phoneController.text.isNotEmpty
-              ? CupertinoButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => ContactDetailScreen(phoneNumber: phoneController.text),
-                ),
-              );
-            },
-            child: Text('저장'),
-          )
+            Container(
+              height: 80, // 고정된 높이 설정
+              child: phoneController.text.isNotEmpty
+                  ? CupertinoButton(
+                    onPressed: () {
+                      Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => ContactDetailScreen(phoneNumber: phoneController.text),
+                       ),
+                     );
+                    },
+                    child: Text('저장'),
+              )
 
               : SizedBox.shrink(),
         ),

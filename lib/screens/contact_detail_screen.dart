@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:contact/providers/contacts_provider.dart';
@@ -161,27 +162,27 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
     }
   }
 
-  @override
   Widget _buildAddIcon() {
     return Container(
       width: 30,
       height: 30,
       decoration: BoxDecoration(
-        color: Colors.green,
+        color: CupertinoColors.activeGreen,
         shape: BoxShape.circle,
       ),
       child: Icon(
-        Icons.add_rounded,
-        color: Colors.white,
+        CupertinoIcons.add,
+        color: CupertinoColors.white,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('연락처 상세')),
-      body: Padding(
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.secondarySystemBackground,
+      navigationBar: CupertinoNavigationBar(middle: Text('New Contact')),
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
@@ -189,55 +190,120 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  InkWell(
+                  GestureDetector(
                     onTap: () {
                       // 이미지 선택 로직
                     },
-                    customBorder: CircleBorder(), // 원 형태의 터치 영역
+                     // 원 형태의 터치 영역
                     child: Stack(
                       alignment: Alignment.bottomRight,
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.22, // 화면 폭의 22%
-                          height: MediaQuery.of(context).size.width * 0.22, // 화면 폭의 22%
+                          width: MediaQuery.of(context).size.width * 0.1, // 화면 폭의 22%
+                          height: MediaQuery.of(context).size.width * 0.1, // 화면 폭의 22%
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.grey, // 원의 색상을 지정
+                            color: CupertinoColors.systemGrey, // 원의 색상을 지정
                           ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 8), // 원과 텍스트 사이의 간격 조절
-                  InkWell(
+                  GestureDetector(
                     onTap: () {
                       // 이미지 선택 로직
                     },
                     child: Text(
-                      profileImage == null ? 'add photo' : 'edit photo',
+                      profileImage == null ? 'Add photo' : 'edit photo',
                       style: TextStyle(
-                        color: Colors.blue, // 텍스트 색상을 원과 동일하게 설정
-                        // 여기에 추가적인 스타일 속성을 추가할 수 있습니다.
+                        fontSize: 15,
+                        color: CupertinoColors.activeBlue,
+                        decoration: TextDecoration.none,  // 노란색 밑줄 제거
                       ),
                     ),
                   ),
                 ],
+
               ),
+
             ),
+            SizedBox(height: 8),
 
 
-            TextField(
-              controller: firstNameController,
-              decoration: InputDecoration(labelText: 'First Name'),
+            Column(
+              children: [
+                CupertinoTextField(
+                  controller: firstNameController,
+                  placeholder: 'First Name',
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      top: BorderSide(
+                        color: Colors.grey,
+                        width: 0.8,
+                      ),
+                      bottom: BorderSide(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  placeholderStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
+                ),
+                CupertinoTextField(
+                  controller: lastNameController,
+                  placeholder: 'Last Name',
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      top: BorderSide(
+                        color: Colors.grey,
+                        width: 0.8,
+                      ),
+                      bottom: BorderSide(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  placeholderStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
+                ),
+                CupertinoTextField(
+                  controller: companyController,
+                  placeholder: 'Company',
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15), // remove horizontal padding
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      top: BorderSide(
+                        color: Colors.grey,
+                      ),
+                      bottom: BorderSide(
+                        color: Colors.grey,
+                        width: 0.8,
+                      ),
+                    ),
+                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  placeholderStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
+                ),
+              ],
             ),
-            TextField(
-              controller: lastNameController,
-              decoration: InputDecoration(labelText: 'Last Name'),
-            ),
-            TextField(
-              controller: companyController,
-              decoration: InputDecoration(labelText: 'Company'),
-            ),
+
+            SizedBox(height: 50.0,),
+
             GestureDetector(
               onTap: _toggleAddPhoneField,
               child: Column(
@@ -245,21 +311,62 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                   AnimatedContainer(
                     height: showAddPhoneField ? 60 : 0,
                     duration: Duration(milliseconds: 300),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: phoneController,
-                        decoration: InputDecoration(labelText: 'add phone'),
+                    child: CupertinoTextField(
+                      controller: phoneController,
+                      placeholder: 'add phone',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: _buildAddIcon(),
-                    title: Text('add phone'),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add phone',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
+            SizedBox(height: 50.0),
+
             GestureDetector(
               onTap: _toggleEmailField,
               child: Column(
@@ -267,183 +374,427 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                   AnimatedContainer(
                     height: showEmailField ? 60 : 0,
                     duration: Duration(milliseconds: 300),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: emailController,
-                        decoration: InputDecoration(labelText: 'add email'),
+                    child: CupertinoTextField(
+                      controller: emailController,
+                      placeholder: 'add email',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: _buildAddIcon(),
-                    title: Text('add email'),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add email',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            TextField(
+
+            SizedBox(height: 50.0),
+
+            CupertinoTextField(
               controller: ringtoneController,
-              decoration: InputDecoration(labelText: 'Ringtone'),
+              placeholder: 'Ringtone',
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.grey,
+                    width: 0.8,
+                  ),
+                  bottom: BorderSide(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
+              placeholderStyle: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),// 볼드체 스타일 적용
             ),
-            TextField(
+
+            SizedBox(height: 50.0),
+
+            CupertinoTextField(
               controller: textToneController,
-              decoration: InputDecoration(labelText: 'Text Tone'),
+              placeholder: 'Text Tone',
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.grey,
+                    width: 0.8,
+                  ),
+                  bottom: BorderSide(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
+              placeholderStyle: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
+
+            SizedBox(height: 50.0),
+
             GestureDetector(
-              onTap: _toggleUrlField,  // 소셜 프로필 항목에 대한 토글 함수 연결
+              onTap: _toggleUrlField,
               child: Column(
                 children: [
                   AnimatedContainer(
                     height: showUrlField ? 60 : 0,
                     duration: Duration(milliseconds: 300),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: urlController,
-                        decoration: InputDecoration(labelText: 'add url'),
+                    child: CupertinoTextField(
+                      controller: urlController,
+                      placeholder: 'add url',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: _buildAddIcon(),
-                    title: Text('add url'),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add url',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
+            SizedBox(height: 50.0),
+
             GestureDetector(
-              onTap: _toggleAddressField, // 이 부분에서 토글 함수를 연결했습니다.
+              onTap: _toggleAddressField,
               child: Column(
                 children: [
                   AnimatedContainer(
                     height: showAddressField ? 60 : 0,
                     duration: Duration(milliseconds: 300),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: addressController,
-                        decoration: InputDecoration(labelText: 'add address'),
+                    child: CupertinoTextField(
+                      controller: addressController,
+                      placeholder: 'add address',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.add_rounded,
-                        color: Colors.white,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
                       ),
                     ),
-                    title: Text('add address'),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add address',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
+            SizedBox(height: 50.0),
+
             GestureDetector(
               onTap: _toggleBirthdayField,
               child: Column(
                 children: [
                   AnimatedContainer(
-                    height: showBirthdayField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
-                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: birthdayController,
-                        decoration: InputDecoration(labelText: 'add birthday'),
+                    height: showBirthdayField ? 60 : 0,
+                    duration: Duration(milliseconds: 300),
+                    child: CupertinoTextField(
+                      controller: birthdayController,
+                      placeholder: 'add birthday',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.add_rounded,
-                        color: Colors.white,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
                       ),
                     ),
-                    title: Text('add birthday'),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add birthday',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
+            SizedBox(height: 50.0),
+
             GestureDetector(
               onTap: _toggleDateField,
               child: Column(
                 children: [
                   AnimatedContainer(
-                    height: showDateField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
-                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: addDateController,
-                        decoration: InputDecoration(labelText: 'add date'),
+                    height: showDateField ? 60 : 0,
+                    duration: Duration(milliseconds: 300),
+                    child: CupertinoTextField(
+                      controller: addDateController,
+                      placeholder: 'add date',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.add_rounded,
-                        color: Colors.white,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
                       ),
                     ),
-                    title: Text('add date'),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add date',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
+            SizedBox(height: 50.0),
+
             GestureDetector(
               onTap: _toggleRelatedNameField,
               child: Column(
                 children: [
                   AnimatedContainer(
-                    height: showRelatedNameField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
-                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: relatedNameController,
-                        decoration: InputDecoration(labelText: 'add related name'),
+                    height: showRelatedNameField ? 60 : 0,
+                    duration: Duration(milliseconds: 300),
+                    child: CupertinoTextField(
+                      controller: relatedNameController,
+                      placeholder: 'add related name',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.add_rounded,
-                        color: Colors.white,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
                       ),
                     ),
-                    title: Text('add related name'),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add related name',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
+            SizedBox(height: 50.0),
+
             GestureDetector(
               onTap: _toggleSocialProfileField,
               child: Column(
@@ -451,99 +802,242 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                   AnimatedContainer(
                     height: showSocialProfileField ? 60 : 0,
                     duration: Duration(milliseconds: 300),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: socialProfileController,
-                        decoration: InputDecoration(labelText: 'add social profile'),
+                    child: CupertinoTextField(
+                      controller: socialProfileController,
+                      placeholder: 'add social profile',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: _buildAddIcon(),
-                    title: Text('add social profile'),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add social profile',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
+            SizedBox(height: 50.0),
+
             GestureDetector(
               onTap: _toggleInstantMessageField,
               child: Column(
                 children: [
                   AnimatedContainer(
-                    height: showInstantMessageField ? 60 : 0, // 주소 필드 표시 여부에 따라 높이 조절
-                    duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: TextField(
-                        controller: instantMessageController,
-                        decoration: InputDecoration(labelText: 'add Instant message'),
+                    height: showInstantMessageField ? 60 : 0,
+                    duration: Duration(milliseconds: 300),
+                    child: CupertinoTextField(
+                      controller: instantMessageController,
+                      placeholder: 'add instant message',
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      placeholderStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                     ),
                   ),
-                  ListTile(
-                    leading: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.add_rounded,
-                        color: Colors.white,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
                       ),
                     ),
-                    title: Text('add Instant message'),
+                    child: Row(
+                      children: [
+                        _buildAddIcon(),
+                        SizedBox(width: 16.0),
+                        Text(
+                          'add instant message',
+                          style: TextStyle(
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
+            SizedBox(height: 50.0),
+
             Container(
-              padding: EdgeInsets.all(8.0), // 내부 여백을 추가하여 텍스트와 테두리 사이에 간격을 줍니다.
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueAccent), // 테두리 색상 설정
-                borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게 처리
-              ),
-              child: TextField(
+              height: 120.0, // 원하는 높이 값으로 설정
+              child: CupertinoTextField(
                 controller: noteController,
-                decoration: InputDecoration(
-                  labelText: 'Notes',
-                  border: InputBorder.none, // 기본 TextField 테두리 제거
+                placeholder: 'Notes',
+                padding: EdgeInsets.only(left: 10, top: 10), // top 패딩을 추가하여 위로 올림
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey,
+                      width: 0.8,
+                    ),
+                    bottom: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
-                maxLines: null, // 여러 줄의 텍스트를 입력할 수 있게 설정
-                keyboardType: TextInputType.multiline, // 여러 줄 입력 키보드 타입 설정
+                style: TextStyle(fontWeight: FontWeight.bold),
+                placeholderStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+                textAlignVertical: TextAlignVertical.top, // 텍스트를 위로 정렬
               ),
             ),
-            ListTile(
-              title: Text('add field'),
+
+
+
+            SizedBox(height: 50.0),
+
+            GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NewFieldSelectionPage()),
+                  CupertinoPageRoute(builder: (context) => NewFieldSelectionPage()),
                 );
               },
+              child: Container(
+                height: 50.0,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10), // 패딩 추가
+                decoration: BoxDecoration(
+                  color: Colors.white,  // 백그라운드 컬러를 흰색으로 설정
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                    bottom: BorderSide(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(width: 16.0),
+                    Text(
+                      'add field',
+                      style: TextStyle(
+                        color: CupertinoColors.activeBlue,
+                        fontWeight: FontWeight.bold, // 폰트 가중치 조절
+                        fontSize: 17.0, // 폰트 크기 조절
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            ElevatedButton(
+
+            SizedBox(height: 50.0),
+
+            CupertinoButton.filled(
               onPressed: () {
                 final contactsProvider = Provider.of<ContactsProvider>(context, listen: false);
-                contactsProvider.addContact(
-                  firstName: firstNameController.text,
-                  lastName: lastNameController.text,
-                  company: companyController.text,
-                  phone: phoneController.text,
-                  email: emailController.text,
-                  ringtone: ringtoneController.text,
-                  textTone: textToneController.text,
-                  url: urlController.text,
-                  address: addressController.text,
-                  birthday: parseDate(birthdayController.text),
-                  addDate: parseDate(addDateController.text),
-                  relatedName: relatedNameController.text,
-                  socialProfile: socialProfileController.text,
-                  instantMessage: instantMessageController.text,
-                  note: noteController.text,
-                ); // 전화번호 저장
+
+                if (widget.index == null) {
+                  // 새 연락처 추가
+                  contactsProvider.addContact(
+                    firstName: firstNameController.text,
+                    lastName: lastNameController.text,
+                    company: companyController.text,
+                    phone: phoneController.text,
+                    email: emailController.text,
+                    ringtone: ringtoneController.text,
+                    textTone: textToneController.text,
+                    url: urlController.text,
+                    address: addressController.text,
+                    birthday: parseDate(birthdayController.text),
+                    addDate: parseDate(addDateController.text),
+                    relatedName: relatedNameController.text,
+                    socialProfile: socialProfileController.text,
+                    instantMessage: instantMessageController.text,
+                    note: noteController.text,
+                  );
+                } else {
+                  // 기존 연락처 수정
+                  contactsProvider.updateContact(
+                    widget.index!,
+                    firstName: firstNameController.text,
+                    lastName: lastNameController.text,
+                    company: companyController.text,
+                    phone: phoneController.text,
+                    email: emailController.text,
+                    ringtone: ringtoneController.text,
+                    textTone: textToneController.text,
+                    url: urlController.text,
+                    address: addressController.text,
+                    birthday: parseDate(birthdayController.text),
+                    addDate: parseDate(addDateController.text),
+                    relatedName: relatedNameController.text,
+                    socialProfile: socialProfileController.text,
+                    instantMessage: instantMessageController.text,
+                    note: noteController.text,
+                  );
+                }// 전화번호 저장
 
                 // 연락처 저장 후 이전 화면으로 돌아갑니다.
                 Navigator.pop(context);
