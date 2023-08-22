@@ -18,21 +18,38 @@ class ContactsScreen extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Icon(CupertinoIcons.add),
           onPressed: () {
-            // 새 연락처 추가 화면으로 이동
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => ContactDetailScreen(phoneNumber: ''), // phoneNumber를 빈 문자열로 전달
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) => Container(
+                  margin: EdgeInsets.only(top: 10.0),  // 위쪽에 여백 추가
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(  // 라운딩 처리된 모서리 적용
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
+                  ),
+                  child: ContactDetailScreen(phoneNumber: ''),
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(0.0, 1.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOut;
+                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
+                  return SlideTransition(position: offsetAnimation, child: child);
+                },
               ),
             );
           },
+
         ),
       ),
       child: ListView.builder(
         itemCount: contacts.length,
         itemBuilder: (context, index) {
           final contact = contacts[index];
-          final contactName = "${contact.firstName} ${contact.lastName}".trim(); // firstName과 lastName을 합쳐 이름을 표시
+          final contactName = "${contact.firstName} ${contact.lastName}".trim();
           return ListTile(
             leading: Icon(CupertinoIcons.person),
             title: Text(contactName),

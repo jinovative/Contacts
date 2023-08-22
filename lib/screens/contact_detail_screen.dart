@@ -15,6 +15,65 @@ class ContactDetailScreen extends StatefulWidget {
   _ContactDetailScreenState createState() => _ContactDetailScreenState();
 }
 
+class PhoneNumberEntry extends StatelessWidget {
+  final TextEditingController controller;
+  final VoidCallback onDelete;
+  final List<String> phoneCategories = ['mobile', 'work', 'phone'];
+  final ValueChanged<String> onCategorySelected;
+
+  PhoneNumberEntry({
+    required this.controller,
+    required this.onDelete,
+    required this.onCategorySelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(CupertinoIcons.minus_circled, color: CupertinoColors.systemRed),
+          onPressed: onDelete,
+        ),
+        DropdownButton<String>(
+          value: phoneCategories[0],
+          onChanged: (newValue) {
+            onCategorySelected(newValue!);
+          },
+          items: phoneCategories.map((String category) {
+            return DropdownMenuItem<String>(
+              value: category,
+              child: Text(category),
+            );
+          }).toList(),
+        ),
+        Expanded(
+          child: CupertinoTextField(
+            controller: controller,
+            placeholder: 'add phone',
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
+                bottom: BorderSide(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
+              ),
+            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
+            placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class NewFieldSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -57,8 +116,8 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   final TextEditingController socialProfileController = TextEditingController();
   final TextEditingController instantMessageController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
-  String? profileImage;
 
+  String? profileImage;
   bool showAddPhoneField = false;
   bool showEmailField = false;
   bool showRelatedNameField = false;
@@ -69,19 +128,19 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   bool showSocialProfileField = false;
   bool showInstantMessageField = false;
 
-  DateTime? parseDate(String? date) {
-    if (date == null || date.isEmpty) {
-      return null;
-    }
-
-    try {
-      return DateTime.parse(date);
-    } catch (e) {
-      print('Error parsing date: $e');
-      return null;
-    }
+  void _addPhoneNumberField() {
+    setState(() {
+      phoneController.add(TextEditingController());
+    });
   }
-  // 각 토글 함수
+
+  void _removePhoneNumberField(int index) {
+    setState(() {
+      phoneController[index].dispose();
+      phoneController.removeAt(index);
+    });
+  }
+
   void _toggleAddPhoneField() {
     setState(() {
       showAddPhoneField = !showAddPhoneField;
@@ -122,6 +181,19 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
     setState(() {
       showDateField = !showDateField;
     });
+  }
+
+  DateTime? parseDate(String? date) {
+    if (date == null || date.isEmpty) {
+      return null;
+    }
+
+    try {
+      return DateTime.parse(date);
+    } catch (e) {
+      print('Error parsing date: $e');
+      return null;
+    }
   }
 
   void _toggleSocialProfileField() {
@@ -181,7 +253,69 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.secondarySystemBackground,
-      navigationBar: CupertinoNavigationBar(middle: Text('New Contact')),
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(
+          widget.index == null ? 'New Contact' : 'Contact Detail',
+          style: TextStyle(fontWeight: FontWeight.w900),
+        ),
+        leading: CupertinoButton(
+          child: Text('Cancel'),
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            // Cancel 버튼을 누르면 이전 화면으로 돌아갑니다.
+            Navigator.pop(context);
+          },
+        ),
+        trailing: CupertinoButton(
+          child: Text(widget.index == null ? 'Done' : 'Edit'),
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            final contactsProvider = Provider.of<ContactsProvider>(context, listen: false);
+
+            if (widget.index == null) {
+              // 새 연락처 추가
+              contactsProvider.addContact(
+                firstName: firstNameController.text,
+                lastName: lastNameController.text,
+                company: companyController.text,
+                phone: phoneController.text,
+                email: emailController.text,
+                ringtone: ringtoneController.text,
+                textTone: textToneController.text,
+                url: urlController.text,
+                address: addressController.text,
+                birthday: parseDate(birthdayController.text),
+                addDate: parseDate(addDateController.text),
+                relatedName: relatedNameController.text,
+                socialProfile: socialProfileController.text,
+                instantMessage: instantMessageController.text,
+                note: noteController.text,
+              );
+            } else {
+
+              contactsProvider.updateContact(
+                widget.index!,
+                firstName: firstNameController.text,
+                lastName: lastNameController.text,
+                company: companyController.text,
+                phone: phoneController.text,
+                email: emailController.text,
+                ringtone: ringtoneController.text,
+                textTone: textToneController.text,
+                url: urlController.text,
+                address: addressController.text,
+                birthday: parseDate(birthdayController.text),
+                addDate: parseDate(addDateController.text),
+                relatedName: relatedNameController.text,
+                socialProfile: socialProfileController.text,
+                instantMessage: instantMessageController.text,
+                note: noteController.text,
+              );
+            }
+            Navigator.pop(context);
+          },
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -199,8 +333,8 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                       alignment: Alignment.bottomRight,
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.1, // 화면 폭의 22%
-                          height: MediaQuery.of(context).size.width * 0.1, // 화면 폭의 22%
+                          width: MediaQuery.of(context).size.width * 0.1,
+                          height: MediaQuery.of(context).size.width * 0.1,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: CupertinoColors.systemGrey, // 원의 색상을 지정
@@ -224,9 +358,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                     ),
                   ),
                 ],
-
               ),
-
             ),
             SizedBox(height: 8),
 
@@ -308,6 +440,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
               onTap: _toggleAddPhoneField,
               child: Column(
                 children: [
+                  if (showAddPhoneField) PhoneNumberEntry(controller: phoneController),
                   AnimatedContainer(
                     height: showAddPhoneField ? 60 : 0,
                     duration: Duration(milliseconds: 300),
@@ -329,9 +462,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                         ),
                       ),
                       style: TextStyle(fontWeight: FontWeight.bold),
-                      placeholderStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey),
+                      placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                     ),
                   ),
                   Container(
@@ -993,57 +1124,6 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
             ),
 
             SizedBox(height: 50.0),
-
-            CupertinoButton.filled(
-              onPressed: () {
-                final contactsProvider = Provider.of<ContactsProvider>(context, listen: false);
-
-                if (widget.index == null) {
-                  // 새 연락처 추가
-                  contactsProvider.addContact(
-                    firstName: firstNameController.text,
-                    lastName: lastNameController.text,
-                    company: companyController.text,
-                    phone: phoneController.text,
-                    email: emailController.text,
-                    ringtone: ringtoneController.text,
-                    textTone: textToneController.text,
-                    url: urlController.text,
-                    address: addressController.text,
-                    birthday: parseDate(birthdayController.text),
-                    addDate: parseDate(addDateController.text),
-                    relatedName: relatedNameController.text,
-                    socialProfile: socialProfileController.text,
-                    instantMessage: instantMessageController.text,
-                    note: noteController.text,
-                  );
-                } else {
-                  // 기존 연락처 수정
-                  contactsProvider.updateContact(
-                    widget.index!,
-                    firstName: firstNameController.text,
-                    lastName: lastNameController.text,
-                    company: companyController.text,
-                    phone: phoneController.text,
-                    email: emailController.text,
-                    ringtone: ringtoneController.text,
-                    textTone: textToneController.text,
-                    url: urlController.text,
-                    address: addressController.text,
-                    birthday: parseDate(birthdayController.text),
-                    addDate: parseDate(addDateController.text),
-                    relatedName: relatedNameController.text,
-                    socialProfile: socialProfileController.text,
-                    instantMessage: instantMessageController.text,
-                    note: noteController.text,
-                  );
-                }// 전화번호 저장
-
-                // 연락처 저장 후 이전 화면으로 돌아갑니다.
-                Navigator.pop(context);
-              },
-              child: Text('저장'),
-            ),
           ],
         ),
       ),
