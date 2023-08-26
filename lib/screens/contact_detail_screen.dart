@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:contact/providers/contacts_provider.dart';
-
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ContactDetailScreen extends StatefulWidget {
   final int? index;
@@ -15,64 +15,6 @@ class ContactDetailScreen extends StatefulWidget {
   _ContactDetailScreenState createState() => _ContactDetailScreenState();
 }
 
-class PhoneNumberEntry extends StatelessWidget {
-  final TextEditingController controller;
-  final VoidCallback onDelete;
-  final List<String> phoneCategories = ['mobile', 'work', 'phone'];
-  final ValueChanged<String> onCategorySelected;
-
-  PhoneNumberEntry({
-    required this.controller,
-    required this.onDelete,
-    required this.onCategorySelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: Icon(CupertinoIcons.minus_circled, color: CupertinoColors.systemRed),
-          onPressed: onDelete,
-        ),
-        DropdownButton<String>(
-          value: phoneCategories[0],
-          onChanged: (newValue) {
-            onCategorySelected(newValue!);
-          },
-          items: phoneCategories.map((String category) {
-            return DropdownMenuItem<String>(
-              value: category,
-              child: Text(category),
-            );
-          }).toList(),
-        ),
-        Expanded(
-          child: CupertinoTextField(
-            controller: controller,
-            placeholder: 'add phone',
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(
-                  color: Colors.grey,
-                  width: 1.0,
-                ),
-                bottom: BorderSide(
-                  color: Colors.grey,
-                  width: 1.0,
-                ),
-              ),
-            ),
-            style: TextStyle(fontWeight: FontWeight.bold),
-            placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class NewFieldSelectionPage extends StatelessWidget {
   @override
@@ -117,6 +59,8 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   final TextEditingController instantMessageController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
+  String selectedCategory = 'Category 1';
+
   String? profileImage;
   bool showAddPhoneField = false;
   bool showEmailField = false;
@@ -128,18 +72,9 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   bool showSocialProfileField = false;
   bool showInstantMessageField = false;
 
-  void _addPhoneNumberField() {
-    setState(() {
-      phoneController.add(TextEditingController());
-    });
-  }
+  final SlidableController slidableController = SlidableController();
 
-  void _removePhoneNumberField(int index) {
-    setState(() {
-      phoneController[index].dispose();
-      phoneController.removeAt(index);
-    });
-  }
+
 
   void _toggleAddPhoneField() {
     setState(() {
@@ -236,8 +171,8 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
 
   Widget _buildAddIcon() {
     return Container(
-      width: 30,
-      height: 30,
+      width: 25,
+      height: 25,
       decoration: BoxDecoration(
         color: CupertinoColors.activeGreen,
         shape: BoxShape.circle,
@@ -249,7 +184,22 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
     );
   }
 
-  @override
+  Widget _buildDeleteIcon() {
+    return Container(
+        width: 25,
+        height: 25,
+        decoration: BoxDecoration(
+          color: CupertinoColors.systemRed,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          CupertinoIcons.minus,
+          color: CupertinoColors.white,
+        ),
+    );
+  }
+
+
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.secondarySystemBackground,
@@ -328,7 +278,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                     onTap: () {
                       // 이미지 선택 로직
                     },
-                     // 원 형태의 터치 영역
+                    // 원 형태의 터치 영역
                     child: Stack(
                       alignment: Alignment.bottomRight,
                       children: [
@@ -360,6 +310,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                 ],
               ),
             ),
+
             SizedBox(height: 8),
 
 
@@ -437,32 +388,61 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
             SizedBox(height: 50.0,),
 
             GestureDetector(
-              onTap: _toggleAddPhoneField,
+              onTap: () {
+                FocusScope.of(context).unfocus();
+                _toggleAddPhoneField();
+              },
               child: Column(
                 children: [
-                  if (showAddPhoneField) PhoneNumberEntry(controller: phoneController),
                   AnimatedContainer(
-                    height: showAddPhoneField ? 60 : 0,
+                    height: showAddPhoneField ? 50 : 0,
                     duration: Duration(milliseconds: 300),
-                    child: CupertinoTextField(
-                      controller: phoneController,
-                      placeholder: 'add phone',
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          top: BorderSide(
-                            color: Colors.grey,
-                            width: 1.0,
-                          ),
-                          bottom: BorderSide(
-                            color: Colors.grey,
-                            width: 1.0,
+                    child: Slidable(
+                      controller: slidableController,
+                      actionPane: SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.25,
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                          caption: 'Delete',
+                          color: CupertinoColors.systemRed,
+                          icon: CupertinoIcons.ellipsis,
+                          onTap: () {
+                            _buildDeleteIcon();
+                            slidableController.activeState?.open();
+                          },
+                        ),
+                      ],
+                      child: CupertinoTextField(
+                        controller: phoneController,
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                        },
+                        placeholder: 'add phone',
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            top: BorderSide(
+                              color: Colors.grey,
+                              width: 1.0,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1.0,
+                            ),
                           ),
                         ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                        prefix: Row(
+                          mainAxisAlignment: MainAxisAlignment.start, // Align items to the start (left)
+                          children: [
+                            SizedBox(width: 10), // Adjusted spacing to move the icon a little to the right
+                            _buildDeleteIcon(),
+                            SizedBox(width: 6),
+                          ],
+                        ),
                       ),
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                     ),
                   ),
                   Container(
@@ -1130,4 +1110,3 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
     );
   }
 }
-
