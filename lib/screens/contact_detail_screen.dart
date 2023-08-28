@@ -59,8 +59,6 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   final TextEditingController instantMessageController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
-  String selectedCategory = 'Category 1';
-
   String? profileImage;
   bool showAddPhoneField = false;
   bool showEmailField = false;
@@ -74,6 +72,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
 
   final SlidableController slidableController = SlidableController();
 
+  double imageSize = 100.0; // Initial size of the image
 
 
   void _toggleAddPhoneField() {
@@ -144,6 +143,8 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   }
 
 
+
+
   @override
   void initState() {
     super.initState();
@@ -199,6 +200,18 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
     );
   }
 
+  Widget _buildCategoryBox() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: Text(
+        'Work', // Category text or icon
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -435,11 +448,12 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                         placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                         prefix: Row(
-                          mainAxisAlignment: MainAxisAlignment.start, // Align items to the start (left)
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            SizedBox(width: 10), // Adjusted spacing to move the icon a little to the right
+                            SizedBox(width: 10),
                             _buildDeleteIcon(),
                             SizedBox(width: 6),
+                            _buildCategoryBox(), // Add the category box here
                           ],
                         ),
                       ),
@@ -475,6 +489,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                 ],
               ),
             ),
+
 
             SizedBox(height: 50.0),
 
