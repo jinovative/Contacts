@@ -42,6 +42,33 @@ class NewFieldSelectionPage extends StatelessWidget {
   }
 }
 
+class AddPhoneSelectionPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Add New Field')),
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text('Option 1'),
+            onTap: () {
+              Navigator.pop(context, 'Option 1'); // Return the selected option
+            },
+          ),
+          ListTile(
+            title: Text('Option 2'),
+            onTap: () {
+              Navigator.pop(context, 'Option 2'); // Return the selected option
+            },
+          ),
+          // Add more options as needed
+        ],
+      ),
+    );
+  }
+}
+
+
 class _ContactDetailScreenState extends State<ContactDetailScreen> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -70,10 +97,18 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   bool showSocialProfileField = false;
   bool showInstantMessageField = false;
 
+  String selectedOption = '';
+
   final SlidableController slidableController = SlidableController();
 
   double imageSize = 100.0; // Initial size of the image
 
+  void _toggleRemoveField() {
+    setState(() {
+      showAddPhoneField = !showAddPhoneField;
+      // Perform any additional logic for removing the field here
+    });
+  }
 
   void _toggleAddPhoneField() {
     setState(() {
@@ -186,7 +221,11 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   }
 
   Widget _buildDeleteIcon() {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        _toggleAddPhoneField();
+      },
+      child: Container(
         width: 25,
         height: 25,
         decoration: BoxDecoration(
@@ -197,24 +236,49 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
           CupertinoIcons.minus,
           color: CupertinoColors.white,
         ),
+      ),
     );
   }
 
-  Widget _buildCategoryBox() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Text(
-        'Work', // Category text or icon
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
+  Widget _buildCategoryBox(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(builder: (context) => AddPhoneSelectionPage()),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          children: [
+
+            SizedBox(width: 1),
+            Text(
+              'Work',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.none,
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_outlined,
+              color: Colors.grey,
+              size: 18,
+            ),
+          ],
         ),
       ),
     );
   }
 
+
+
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+
       backgroundColor: CupertinoColors.secondarySystemBackground,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
@@ -401,6 +465,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
             SizedBox(height: 50.0,),
 
             GestureDetector(
+
               onTap: () {
                 FocusScope.of(context).unfocus();
                 _toggleAddPhoneField();
@@ -453,7 +518,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                             SizedBox(width: 10),
                             _buildDeleteIcon(),
                             SizedBox(width: 6),
-                            _buildCategoryBox(), // Add the category box here
+                            _buildCategoryBox(context), // Replace this with your category box widget
                           ],
                         ),
                       ),
