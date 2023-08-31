@@ -86,6 +86,9 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
   final TextEditingController instantMessageController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
+  List<TextEditingController> phoneControllers = [];
+  List<TextEditingController> emailControllers = [];
+
   String? profileImage;
   bool showAddPhoneField = false;
   bool showEmailField = false;
@@ -101,12 +104,11 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
 
   final SlidableController slidableController = SlidableController();
 
-  double imageSize = 100.0; // Initial size of the image
+  double imageSize = 100.0;
 
   void _toggleRemoveField() {
     setState(() {
       showAddPhoneField = !showAddPhoneField;
-      // Perform any additional logic for removing the field here
     });
   }
 
@@ -191,7 +193,10 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
       firstNameController.text = contact.firstName;
       lastNameController.text = contact.lastName;
       companyController.text = contact.company;
-      phoneController.text = contact.phone;
+      List<String> phoneNumbers = contact.phone.split(',');
+      for (String phoneNumber in phoneNumbers) {
+        phoneControllers.add(TextEditingController(text: phoneNumber.trim()));
+      }
       emailController.text = contact.email;
       ringtoneController.text = contact.ringtone;
       textToneController.text = contact.textTone;
@@ -220,10 +225,12 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
     );
   }
 
-  Widget _buildDeleteIcon() {
+  Widget _buildDeleteIcon(TextEditingController controller) {
     return GestureDetector(
       onTap: () {
-        _toggleAddPhoneField();
+        setState(() {
+          phoneControllers.remove(controller);
+        });
       },
       child: Container(
         width: 25,
@@ -278,7 +285,6 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
 
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-
       backgroundColor: CupertinoColors.secondarySystemBackground,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
@@ -289,7 +295,6 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
           child: Text('Cancel'),
           padding: EdgeInsets.zero,
           onPressed: () {
-            // Cancel 버튼을 누르면 이전 화면으로 돌아갑니다.
             Navigator.pop(context);
           },
         ),
@@ -297,15 +302,17 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
           child: Text(widget.index == null ? 'Done' : 'Edit'),
           padding: EdgeInsets.zero,
           onPressed: () {
-            final contactsProvider = Provider.of<ContactsProvider>(context, listen: false);
+            final contactsProvider = Provider.
+            of<ContactsProvider>(context, listen: false);
+            List<String> phoneNumbers = phoneControllers.map((controller)
+            => controller.text).toList();
 
             if (widget.index == null) {
-              // 새 연락처 추가
               contactsProvider.addContact(
                 firstName: firstNameController.text,
                 lastName: lastNameController.text,
                 company: companyController.text,
-                phone: phoneController.text,
+                phone: phoneNumbers.join(','),
                 email: emailController.text,
                 ringtone: ringtoneController.text,
                 textTone: textToneController.text,
@@ -319,13 +326,12 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                 note: noteController.text,
               );
             } else {
-
               contactsProvider.updateContact(
                 widget.index!,
                 firstName: firstNameController.text,
                 lastName: lastNameController.text,
                 company: companyController.text,
-                phone: phoneController.text,
+                phone: phoneNumbers.join(','),
                 email: emailController.text,
                 ringtone: ringtoneController.text,
                 textTone: textToneController.text,
@@ -465,65 +471,69 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
             SizedBox(height: 50.0,),
 
             GestureDetector(
-
               onTap: () {
-                FocusScope.of(context).unfocus();
-                _toggleAddPhoneField();
+                setState(() {
+                  phoneControllers.add(TextEditingController());
+                });
               },
               child: Column(
                 children: [
-                  AnimatedContainer(
-                    height: showAddPhoneField ? 50 : 0,
-                    duration: Duration(milliseconds: 300),
-                    child: Slidable(
-                      controller: slidableController,
-                      actionPane: SlidableDrawerActionPane(),
-                      actionExtentRatio: 0.25,
-                      secondaryActions: <Widget>[
-                        IconSlideAction(
-                          caption: 'Delete',
-                          color: CupertinoColors.systemRed,
-                          icon: CupertinoIcons.ellipsis,
-                          onTap: () {
-                            _buildDeleteIcon();
-                            slidableController.activeState?.open();
-                          },
-                        ),
-                      ],
-                      child: CupertinoTextField(
-                        controller: phoneController,
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                        },
-                        placeholder: 'add phone',
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border(
-                            top: BorderSide(
-                              color: Colors.grey,
-                              width: 1.0,
+                  ...phoneControllers.map((controller) =>
+                      Slidable(
+                        controller: slidableController,
+                        actionPane: SlidableDrawerActionPane(),
+                        actionExtentRatio: 0.25,
+                        secondaryActions: <Widget>[
+                          IconSlideAction(
+                            caption: 'Delete',
+                            color: CupertinoColors.systemRed,
+                            icon: CupertinoIcons.ellipsis,
+                            onTap: () {
+                              setState(() {
+                                phoneControllers.remove(controller);
+                              });
+                            },
+                          ),
+                        ],
+                        child: AnimatedContainer(
+                          height: 60,
+                          duration: Duration(milliseconds: 300),
+                          child: CupertinoTextField(
+                            controller: controller,
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                            },
+                            placeholder: 'add phone',
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                top: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                ),
+                                bottom: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                ),
+                              ),
                             ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1.0,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                            prefix: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(width: 10),
+                                _buildDeleteIcon(controller), // Here, pass the controller as an argument
+                                SizedBox(width: 6),
+                                _buildCategoryBox(context),
+                              ],
                             ),
+
                           ),
                         ),
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-                        prefix: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(width: 10),
-                            _buildDeleteIcon(),
-                            SizedBox(width: 6),
-                            _buildCategoryBox(context), // Replace this with your category box widget
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                      )
+                  ).toList(),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     decoration: BoxDecoration(
@@ -559,35 +569,56 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
             SizedBox(height: 50.0),
 
             GestureDetector(
-              onTap: _toggleEmailField,
+              onTap: () {
+                setState(() {
+                  emailControllers.add(TextEditingController());
+                });
+              },
               child: Column(
                 children: [
-                  AnimatedContainer(
-                    height: showEmailField ? 60 : 0,
-                    duration: Duration(milliseconds: 300),
-                    child: CupertinoTextField(
-                      controller: emailController,
-                      placeholder: 'add email',
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          top: BorderSide(
-                            color: Colors.grey,
-                            width: 1.0,
+                  ...emailControllers.map((controller) =>
+                      Slidable(
+                        controller: slidableController,
+                        actionPane: SlidableDrawerActionPane(),
+                        actionExtentRatio: 0.25,
+                        secondaryActions: <Widget>[
+                          IconSlideAction(
+                            caption: 'Delete',
+                            color: CupertinoColors.systemRed,
+                            icon: CupertinoIcons.ellipsis,
+                            onTap: () {
+                              setState(() {
+                                emailControllers.remove(controller);
+                              });
+                            },
                           ),
-                          bottom: BorderSide(
-                            color: Colors.grey,
-                            width: 1.0,
+                        ],
+                        child: AnimatedContainer(
+                          height: 60,
+                          duration: Duration(milliseconds: 300),
+                          child: CupertinoTextField(
+                            controller: controller,
+                            placeholder: 'add email',
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                top: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                ),
+                                bottom: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                ),
+                              ),
+                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            placeholderStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                           ),
                         ),
-                      ),
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      placeholderStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey),
-                    ),
-                  ),
+                      )
+                  ).toList(),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     decoration: BoxDecoration(

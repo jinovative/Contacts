@@ -25,8 +25,8 @@ class ContactsScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(  // 라운딩 처리된 모서리 적용
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0),
+                      topLeft: Radius.circular(500.0),
+                      topRight: Radius.circular(500.0),
                     ),
                   ),
                   child: ContactDetailScreen(phoneNumber: ''),

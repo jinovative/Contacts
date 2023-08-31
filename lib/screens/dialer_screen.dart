@@ -53,33 +53,31 @@ class _DialerScreenState extends State<DialerScreen> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text('Contact'),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              height: 200, // 고정된 높이 설정
-              padding: EdgeInsets.symmetric(horizontal: 20), // 수평 패딩 추가
-              child: Center(
-                child: CupertinoTextField(
-                  controller: phoneController,
-                  keyboardType: TextInputType.phone,
-                  textAlign: TextAlign.center, // 텍스트 중앙 정렬
-                  style: TextStyle(fontSize: 30), // 텍스트 크기 설정
-                  placeholder: "번호 입력", // 플레이스홀더 텍스트 추가
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.transparent), // 테두리 제거
-                  ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            height: 150,
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Center(
+              child: CupertinoTextField(
+                controller: phoneController,
+                keyboardType: TextInputType.phone,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 30),
+                placeholder: "번호 입력",
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 100),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.transparent),
                 ),
               ),
             ),
+          ),
 
 
             // 연락처 저장 버튼
             Container(
-              height: 80, // 고정된 높이 설정
+              height: 55, // 고정된 높이 설정
               child: phoneController.text.isNotEmpty
                   ? CupertinoButton(
                     onPressed: () {
@@ -100,7 +98,9 @@ class _DialerScreenState extends State<DialerScreen> {
           Expanded(
             child: GridView.count(
               crossAxisCount: 3,
-              childAspectRatio: 2,
+              childAspectRatio: 1.1,
+              mainAxisSpacing: 10.0, // 세로 간격 조절
+              crossAxisSpacing: 20.0, // 가로 간격 조절
               children: List.generate(12, (index) {
                 return DialerButton(
                   text: index < 9 ? '${index + 1}' : index == 9 ? '*' : index == 10 ? '0' : '#',
